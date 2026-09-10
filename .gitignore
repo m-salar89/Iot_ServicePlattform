@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Build
+dist
+dist-ssr
+*.local
+
+# Amplify (spaeter, wenn Backend dazu kommt)
+amplify_outputs.json
+amplify_outputs*.json
+.amplify
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+
+# Logs & caches
+*.log
+npm-debug.log*
+.eslintcache
+*.tsbuildinfo
