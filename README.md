@@ -1,7 +1,7 @@
 # IoT Service Plattform
 
 Einfache React/Vite-WebApp, bereit für das Hosting in **AWS Amplify**.
-Das Backend (Lambda, S3, DynamoDB, Auth) kommt in einem späteren Schritt.
+Registrierung und Login laufen über **Amazon Cognito**. Neue Konten bleiben unbestätigt, bis ein Admin sie freigibt.
 
 ## Lokal starten
 
@@ -13,6 +13,20 @@ npm run dev
 ```
 
 Die App läuft danach unter `http://localhost:5173`.
+
+
+## Cognito anbinden
+
+1. `.env.example` nach `.env` kopieren.
+2. Werte aus der Cognito-Konsole eintragen:
+   - `VITE_COGNITO_USER_POOL_ID`
+   - `VITE_COGNITO_CLIENT_ID`
+3. App-Client: Public Client, **kein** Secret, Auth-Flow `ALLOW_USER_SRP_AUTH`.
+4. `npm run dev`
+
+Registrierung legt ein unbestätigtes Konto an. Login funktioniert erst nach der Admin-Freigabe (Link in der Admin-Mail).
+
+Für Amplify Hosting dieselben Variablen unter **Environment variables** setzen (Build-Zeit, Prefix `VITE_`).
 
 ## Auf AWS Amplify deployen
 
@@ -36,7 +50,6 @@ npm create amplify@latest
 
 Danach lassen sich schrittweise verbinden:
 
-- **Auth** (Cognito) für Login
 - **DynamoDB / Amplify Data** für Geräte- und Messdaten
 - **S3 / Storage** für Dateien
 - **Lambda** für eigene APIs und IoT-Verarbeitung

@@ -1,4 +1,13 @@
+import { useEffect, useState } from 'react'
+import AuthScreen from './auth/AuthScreen'
+import {
+  getSignedInUser,
+  isCognitoConfigured,
+  logoutAccount,
+  type AuthUser,
+} from './auth/cognito'
 import './App.css'
+import './auth/AuthScreen.css'
 
 const upcoming = [
   {
@@ -19,6 +28,30 @@ const upcoming = [
 ]
 
 export default function App() {
+  const [ready, setReady] = useState(false)
+  const [user, setUser] = useState<AuthUser | null>(null)
+  const [signingOut, setSigningOut] = useState(false)
+
+  async function refreshUser() {
+    const current = await getSignedInUser()
+    setUser(current)
+    setReady(true)
+  }
+
+  useEffect(() => {
+    void refreshUser()
+  }, [])
+
+  async function handleSignOut() {
+    setSigningOut(true)
+    try {
+      await logoutAccount()
+      setUser(null)
+    } finally {
+      setSigningOut(false)
+    }
+  }
+
   return (
     <div className="page">
       <header className="topbar">
@@ -31,38 +64,69 @@ export default function App() {
           </svg>
           <div>
             <h1>IoT Service Plattform</h1>
-            <p>Erste Version auf AWS Amplify Hosting</p>
+            <p>{user ? user.email ?? user.username : 'Anmeldung über Amazon Cognito'}</p>
           </div>
         </div>
-        <div className="pill">
-          <span className="dot" />
-          System online
-        </div>
+        {user ? (
+          <button type="button" className="btn ghost" onClick={() => void handleSignOut()} disabled={signingOut}>
+            Abmelden
+          </button>
+        ) : (
+          <div className="pill">
+            <span className="dot" />
+            System online
+          </div>
+        )}
       </header>
 
       <main>
-        <section className="hero">
-          <p className="kicker">WebApp · Amplify Hosting</p>
-          <h2>Einfach starten. Später in AWS wachsen.</h2>
-          <p className="hero-lead">
-            Diese Seite ist die erste, bewusst schlanke Version der Plattform.
-            Sie lässt sich direkt mit AWS Amplify aus dem Git-Repository deployen.
-            Lambda, S3 und DynamoDB kommen als Nächstes dazu.
+        {!isCognitoConfigured && (
+          <p className="config-warning">
+            Cognito ist noch nicht konfiguriert. Bitte `.env.example` nach `.env` kopieren und User Pool ID sowie App-Client-ID eintragen.
           </p>
-        </section>
+        )}
 
-        <section className="grid" aria-label="Geplante AWS-Services">
-          {upcoming.map((item) => (
-            <article className="card" key={item.service}>
-              <span>{item.service}</span>
-              <h3>{item.title}</h3>
-              <p>{item.text}</p>
-            </article>
-          ))}
-        </section>
+        {!ready ? (
+          <section className="hero">
+            <p className="kicker">Sitzung</p>
+            <h2>Laden…</h2>
+          </section>
+        ) : user ? (
+          <>
+            <section className="hero">
+              <p className="kicker">Angemeldet</p>
+              <h2>Willkommen in der Plattform.</h2>
+              <p className="hero-lead">
+                Ihr Konto ist freigegeben. Als Nächstes können Lambda, S3 und DynamoDB
+                angebunden werden.
+              </p>
+            </section>
+            <section className="grid" aria-label="Geplante AWS-Services">
+              {upcoming.map((item) => (
+                <article className="card" key={item.service}>
+                  <span>{item.service}</span>
+                  <h3>{item.title}</h3>
+                  <p>{item.text}</p>
+                </article>
+              ))}
+            </section>
+          </>
+        ) : (
+          <div className="auth-shell">
+            <section className="auth-copy">
+              <p className="kicker">WebApp · Cognito</p>
+              <h2>Zugang nur nach Admin-Freigabe.</h2>
+              <p>
+                Registrieren Sie sich mit Ihrer E-Mail. Ein Admin erhält einen Link
+                und bestätigt das Konto. Erst danach ist die Anmeldung möglich.
+              </p>
+            </section>
+            <AuthScreen onSignedIn={refreshUser} />
+          </div>
+        )}
       </main>
 
-      <footer className="footer">IoT Service Plattform · Frontend-first, bereit für Amplify</footer>
+      <footer className="footer">IoT Service Plattform · Cognito mit Admin-Freigabe</footer>
     </div>
   )
 }
