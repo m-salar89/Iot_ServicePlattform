@@ -56,15 +56,10 @@ export default function App() {
     <div className="page">
       <header className="topbar">
         <div className="brand">
-          <svg className="mark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <rect width="32" height="32" rx="8" fill="#0b1c24" />
-            <path d="M8 20.5c2.4-2.2 5.2-3.3 8-3.3s5.6 1.1 8 3.3" stroke="#2ec4b6" strokeWidth="2" strokeLinecap="round" />
-            <path d="M11 16.2c1.6-1.5 3.3-2.2 5-2.2s3.4.7 5 2.2" stroke="#2ec4b6" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="16" cy="11.2" r="1.8" fill="#e8a317" />
-          </svg>
+          <img className="brand-logo" src="/zubler-logo.png" alt="Zubler Gerätebau GmbH" />
           <div>
-            <h1>IoT Service Plattform</h1>
-            <p>{user ? user.email ?? user.username : 'Anmeldung über Amazon Cognito'}</p>
+            <h1>Zubler Service Plattform</h1>
+            <p>{user ? (user.email ?? user.username) : 'Zubler Gerätebau GmbH'}</p>
           </div>
         </div>
         {user ? (
@@ -114,11 +109,10 @@ export default function App() {
         ) : (
           <div className="auth-shell">
             <section className="auth-copy">
-              <p className="kicker">WebApp · Cognito</p>
               <h2>Zugang nur nach Admin-Freigabe.</h2>
               <p>
-                Registrieren Sie sich mit Ihrer E-Mail. Ein Admin erhält einen Link
-                und bestätigt das Konto. Erst danach ist die Anmeldung möglich.
+                Registriere dich mit deiner E-Mail. Ein Admin wird dein Konto
+                bestätigen. Erst danach ist die Anmeldung möglich.
               </p>
             </section>
             <AuthScreen onSignedIn={refreshUser} />
@@ -126,7 +120,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className="footer">IoT Service Plattform · Cognito mit Admin-Freigabe</footer>
+      <footer className="footer">Zubler Service Plattform · Zubler Gerätebau GmbH</footer>
     </div>
   )
 }
