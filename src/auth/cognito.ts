@@ -45,6 +45,19 @@ export async function getSignedInUser(): Promise<AuthUser | null> {
   }
 }
 
+export async function getIdToken(): Promise<string> {
+  if (!isCognitoConfigured) {
+    throw new Error('Cognito ist nicht konfiguriert.')
+  }
+
+  const session = await fetchAuthSession()
+  const token = session.tokens?.idToken?.toString()
+  if (!token) {
+    throw new Error('Die Anmeldung ist abgelaufen. Bitte erneut anmelden.')
+  }
+  return token
+}
+
 export async function registerAccount(input: {
   email: string
   password: string

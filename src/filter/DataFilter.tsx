@@ -7,10 +7,11 @@ export type DataFilterValues = {
 }
 
 type Props = {
-  onApply: (values: DataFilterValues) => void
+  onApply: (values: DataFilterValues) => Promise<void> | void
+  busy?: boolean
 }
 
-export default function DataFilter({ onApply }: Props) {
+export default function DataFilter({ onApply, busy = false }: Props) {
   const [email, setEmail] = useState('')
   const [serialNumber, setSerialNumber] = useState('')
   const [error, setError] = useState('')
@@ -28,7 +29,7 @@ export default function DataFilter({ onApply }: Props) {
     }
 
     setError('')
-    onApply(next)
+    void onApply(next)
   }
 
   return (
@@ -48,6 +49,7 @@ export default function DataFilter({ onApply }: Props) {
             onChange={(event) => setEmail(event.target.value)}
             autoComplete="email"
             placeholder="name@firma.de"
+            disabled={busy}
           />
         </label>
 
@@ -58,13 +60,14 @@ export default function DataFilter({ onApply }: Props) {
             onChange={(event) => setSerialNumber(event.target.value)}
             autoComplete="off"
             placeholder="z. B. ZB-123456"
+            disabled={busy}
           />
         </label>
 
         {error && <p className="filter-error">{error}</p>}
 
-        <button type="submit" className="btn primary">
-          Anwenden
+        <button type="submit" className="btn primary" disabled={busy}>
+          {busy ? 'Daten werden geladen…' : 'Anwenden'}
         </button>
       </form>
     </section>

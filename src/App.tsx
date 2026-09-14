@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getProcessesBySerialNumber, isProcessApiConfigured, type ProcessResponse } from './api/processes'
 import AuthScreen from './auth/AuthScreen'
 import DataFilter, { type DataFilterValues } from './filter/DataFilter'
 import {
@@ -14,7 +15,9 @@ export default function App() {
   const [ready, setReady] = useState(false)
   const [user, setUser] = useState<AuthUser | null>(null)
   const [signingOut, setSigningOut] = useState(false)
-  const [appliedFilter, setAppliedFilter] = useState<DataFilterValues | null>(null)
+  const [loadingProcesses, setLoadingProcesses] = useState(false)
+  const [processResult, setProcessResult] = useState<ProcessResponse | null>(null)
+  const [processError, setProcessError] = useState('')
 
   async function refreshUser() {
     const current = await getSignedInUser()
@@ -31,9 +34,30 @@ export default function App() {
     try {
       await logoutAccount()
       setUser(null)
-      setAppliedFilter(null)
+      setProcessResult(null)
+      setProcessError('')
     } finally {
       setSigningOut(false)
+    }
+  }
+
+  async function handleApply(values: DataFilterValues) {
+    setProcessError('')
+    setProcessResult(null)
+
+    if (!values.serialNumber) {
+      setProcessError('Die Suche per E-Mail wird im nächsten Schritt umgesetzt.')
+      return
+    }
+
+    setLoadingProcesses(true)
+    try {
+      const result = await getProcessesBySerialNumber(values.serialNumber)
+      setProcessResult(result)
+    } catch (error) {
+      setProcessError(error instanceof Error ? error.message : 'Die Datenabfrage ist fehlgeschlagen.')
+    } finally {
+      setLoadingProcesses(false)
     }
   }
 
@@ -65,6 +89,11 @@ export default function App() {
             Cognito ist noch nicht konfiguriert. Bitte `.env.example` nach `.env` kopieren und User Pool ID sowie App-Client-ID eintragen.
           </p>
         )}
+        {isCognitoConfigured && !isProcessApiConfigured && (
+          <p className="config-warning">
+            Die Prozess-API ist nicht konfiguriert. Bitte `VITE_PROCESS_API_URL` setzen.
+          </p>
+        )}
 
         {!ready ? (
           <section className="hero">
@@ -73,23 +102,36 @@ export default function App() {
           </section>
         ) : user ? (
           <div className="filter-shell">
-            <DataFilter onApply={setAppliedFilter} />
-            {appliedFilter && (
-              <p className="filter-result">
-                Filter gesetzt
-                {appliedFilter.email ? (
-                  <>
-                    {' '}für E-Mail <strong>{appliedFilter.email}</strong>
-                  </>
-                ) : null}
-                {appliedFilter.serialNumber ? (
-                  <>
-                    {appliedFilter.email ? ' und' : ' für'} Seriennummer{' '}
-                    <strong>{appliedFilter.serialNumber}</strong>
-                  </>
-                ) : null}
-                . Die Datenabfrage folgt, sobald das Backend angebunden ist.
-              </p>
+            <DataFilter onApply={handleApply} busy={loadingProcesses} />
+
+            {processError && <p className="filter-error result-message">{processError}</p>}
+
+            {processResult && (
+              <section className="process-result" aria-live="polite">
+                <h3>{processResult.processCount} Prozesse gefunden</h3>
+                <p>
+                  Seriennummer <strong>{processResult.serialNumber}</strong> · User-ID{' '}
+                  <strong>{processResult.userId}</strong>
+                </p>
+                {processResult.processes.length === 0 ? (
+                  <p>Für diesen Ofen sind keine Prozesse vorhanden.</p>
+                ) : (
+                  <ul className="process-list">
+                    {processResult.processes.map((process) => (
+                      <li key={process.key}>
+                        <strong>{process.id}</strong>
+                        <code>{process.key}</code>
+                        {process.data !== undefined && (
+                          <details>
+                            <summary>Prozessdaten anzeigen</summary>
+                            <pre>{JSON.stringify(process.data, null, 2)}</pre>
+                          </details>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
             )}
           </div>
         ) : (
