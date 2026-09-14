@@ -131,3 +131,7 @@
   background: rgba(0, 0, 0, 0.22);
   font-size: 0.75rem;
 }
+.process-id {
+  color: var(--muted);
+  font-size: 0.85rem;
+}

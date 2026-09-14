@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getProcessesBySerialNumber, isProcessApiConfigured, type ProcessResponse } from './api/processes'
 import AuthScreen from './auth/AuthScreen'
 import DataFilter, { type DataFilterValues } from './filter/DataFilter'
+import { formatProcessDateTime } from './filter/formatProcessDateTime'
 import {
   getSignedInUser,
   isCognitoConfigured,
@@ -117,9 +118,12 @@ export default function App() {
                   <p>Für diesen Ofen sind keine Prozesse vorhanden.</p>
                 ) : (
                   <ul className="process-list">
-                    {processResult.processes.map((process) => (
+                    {processResult.processes.map((process) => {
+                      const startedAt = formatProcessDateTime(process.id, process.data)
+                      return (
                       <li key={process.key}>
-                        <strong>{process.id}</strong>
+                        <strong>{startedAt ?? process.id}</strong>
+                        {startedAt && <span className="process-id">{process.id}</span>}
                         <code>{process.key}</code>
                         {process.data !== undefined && (
                           <details>
@@ -128,7 +132,8 @@ export default function App() {
                           </details>
                         )}
                       </li>
-                    ))}
+                      )
+                    })}
                   </ul>
                 )}
               </section>
