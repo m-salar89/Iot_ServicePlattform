@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react'
-import { getProcessesBySerialNumber, isProcessApiConfigured, type ProcessResponse } from './api/processes'
+import {
+  getDevicesByEmail,
+  getProcessesBySerialNumber,
+  isProcessApiConfigured,
+  type DeviceListResponse,
+  type ProcessResponse,
+} from './api/processes'
 import AuthScreen from './auth/AuthScreen'
 import DataFilter, { type DataFilterValues } from './filter/DataFilter'
 import { formatProcessDateTime } from './filter/formatProcessDateTime'
@@ -17,6 +23,8 @@ export default function App() {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [signingOut, setSigningOut] = useState(false)
   const [loadingProcesses, setLoadingProcesses] = useState(false)
+  const [deviceResult, setDeviceResult] = useState<DeviceListResponse | null>(null)
+  const [selectedSerial, setSelectedSerial] = useState('')
   const [processResult, setProcessResult] = useState<ProcessResponse | null>(null)
   const [processError, setProcessError] = useState('')
 
@@ -35,6 +43,8 @@ export default function App() {
     try {
       await logoutAccount()
       setUser(null)
+      setDeviceResult(null)
+      setSelectedSerial('')
       setProcessResult(null)
       setProcessError('')
     } finally {
@@ -42,19 +52,38 @@ export default function App() {
     }
   }
 
+  async function loadProcesses(serialNumber: string) {
+    const result = await getProcessesBySerialNumber(serialNumber)
+    setSelectedSerial(result.serialNumber)
+    setProcessResult(result)
+  }
+
   async function handleApply(values: DataFilterValues) {
     setProcessError('')
     setProcessResult(null)
-
-    if (!values.serialNumber) {
-      setProcessError('Die Suche per E-Mail wird im nächsten Schritt umgesetzt.')
-      return
-    }
-
+    setDeviceResult(null)
+    setSelectedSerial('')
     setLoadingProcesses(true)
     try {
-      const result = await getProcessesBySerialNumber(values.serialNumber)
-      setProcessResult(result)
+      if (values.serialNumber) {
+        await loadProcesses(values.serialNumber)
+        return
+      }
+      const result = await getDevicesByEmail(values.email)
+      setDeviceResult(result)
+    } catch (error) {
+      setProcessError(error instanceof Error ? error.message : 'Die Datenabfrage ist fehlgeschlagen.')
+    } finally {
+      setLoadingProcesses(false)
+    }
+  }
+
+  async function handleSelectDevice(serialNumber: string) {
+    setProcessError('')
+    setProcessResult(null)
+    setLoadingProcesses(true)
+    try {
+      await loadProcesses(serialNumber)
     } catch (error) {
       setProcessError(error instanceof Error ? error.message : 'Die Datenabfrage ist fehlgeschlagen.')
     } finally {
@@ -107,6 +136,39 @@ export default function App() {
 
             {processError && <p className="filter-error result-message">{processError}</p>}
 
+            {deviceResult && (
+              <section className="process-result" aria-live="polite">
+                <h3>
+                  {deviceResult.deviceCount === 1
+                    ? '1 Gerät gefunden'
+                    : `${deviceResult.deviceCount} Geräte gefunden`}
+                </h3>
+                <p>
+                  E-Mail <strong>{deviceResult.email}</strong> · User-ID{' '}
+                  <strong>{deviceResult.userId}</strong>
+                </p>
+                {deviceResult.devices.length === 0 ? (
+                  <p>Für diesen Benutzer sind keine Geräte im Process-Bucket vorhanden.</p>
+                ) : (
+                  <ul className="device-list">
+                    {deviceResult.devices.map((device) => (
+                      <li key={device.serialNumber}>
+                        <button
+                          type="button"
+                          className={device.serialNumber === selectedSerial ? 'device-btn selected' : 'device-btn'}
+                          onClick={() => void handleSelectDevice(device.serialNumber)}
+                          disabled={loadingProcesses}
+                        >
+                          <strong>{device.serialNumber}</strong>
+                          <span>Prozesse anzeigen</span>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+            )}
+
             {processResult && (
               <section className="process-result" aria-live="polite">
                 <h3>{processResult.processCount} Prozesse gefunden</h3>
@@ -121,17 +183,17 @@ export default function App() {
                     {processResult.processes.map((process) => {
                       const startedAt = formatProcessDateTime(process)
                       return (
-                      <li key={process.key}>
-                        <strong>{startedAt ?? process.id}</strong>
-                        {startedAt && <span className="process-id">{process.id}</span>}
-                        <code>{process.key}</code>
-                        {process.data !== undefined && (
-                          <details>
-                            <summary>Prozessdaten anzeigen</summary>
-                            <pre>{JSON.stringify(process.data, null, 2)}</pre>
-                          </details>
-                        )}
-                      </li>
+                        <li key={process.key}>
+                          <strong>{startedAt ?? process.id}</strong>
+                          {startedAt && <span className="process-id">{process.id}</span>}
+                          <code>{process.key}</code>
+                          {process.data !== undefined && (
+                            <details>
+                              <summary>Prozessdaten anzeigen</summary>
+                              <pre>{JSON.stringify(process.data, null, 2)}</pre>
+                            </details>
+                          )}
+                        </li>
                       )
                     })}
                   </ul>

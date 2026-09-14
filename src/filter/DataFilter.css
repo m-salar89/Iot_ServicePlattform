@@ -135,3 +135,40 @@
   color: var(--muted);
   font-size: 0.85rem;
 }
+
+.device-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.device-btn {
+  width: 100%;
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: var(--bg-elevated);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.device-btn span {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.device-btn:hover:not(:disabled),
+.device-btn.selected {
+  border-color: var(--teal);
+  outline: 2px solid rgba(46, 196, 182, 0.35);
+}
+
+.device-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
