@@ -7,6 +7,8 @@ export const isProcessApiConfigured = Boolean(processApiUrl)
 export type ProcessEntry = {
   id: string
   key: string
+  timestamp?: number | null
+  lastModified?: string
   data?: unknown
   error?: string
 }

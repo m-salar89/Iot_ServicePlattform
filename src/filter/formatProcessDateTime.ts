@@ -1,3 +1,5 @@
+import type { ProcessEntry } from '../api/processes'
+
 function toUnixSeconds(value: unknown): number | null {
   if (value === null || value === undefined || typeof value === 'boolean') {
     return null
@@ -64,8 +66,12 @@ function timestampFromPayload(data: unknown): number | null {
   return null
 }
 
-export function formatProcessDateTime(id: string, data?: unknown): string | null {
-  const seconds = timestampFromPayload(data) ?? timestampFromProcessId(id)
+export function formatProcessDateTime(process: ProcessEntry): string | null {
+  const seconds =
+    toUnixSeconds(process.timestamp) ??
+    timestampFromPayload(process.data) ??
+    timestampFromProcessId(process.id) ??
+    toUnixSeconds(process.lastModified)
   if (seconds === null) return null
 
   return new Intl.DateTimeFormat('de-DE', {

@@ -119,7 +119,7 @@ export default function App() {
                 ) : (
                   <ul className="process-list">
                     {processResult.processes.map((process) => {
-                      const startedAt = formatProcessDateTime(process.id, process.data)
+                      const startedAt = formatProcessDateTime(process)
                       return (
                       <li key={process.key}>
                         <strong>{startedAt ?? process.id}</strong>
