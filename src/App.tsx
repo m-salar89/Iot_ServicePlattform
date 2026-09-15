@@ -148,7 +148,7 @@ export default function App() {
                   <strong>{deviceResult.userId}</strong>
                 </p>
                 {deviceResult.devices.length === 0 ? (
-                  <p>Für diesen Benutzer sind keine Geräte im Process-Bucket vorhanden.</p>
+                  <p>Dieser Benutzer hat noch keine Prozesse.</p>
                 ) : (
                   <ul className="device-list">
                     {deviceResult.devices.map((device) => (

@@ -30,6 +30,7 @@ export type DeviceListResponse = {
   userId: string
   deviceCount: number
   devices: DeviceEntry[]
+  message?: string
 }
 
 type ApiErrorBody = {
