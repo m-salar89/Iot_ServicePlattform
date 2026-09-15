@@ -37,6 +37,14 @@ type ApiErrorBody = {
   error?: string
 }
 
+// Die Lambda antwortet mit englischen Kennungen; im UI steht deutscher Klartext.
+const API_ERROR_TEXTS: Record<string, string> = {
+  'User not found in Cognito':
+    'Zu dieser E-Mail-Adresse ist kein Kunde vorhanden. Bitte prüfe die Schreibweise.',
+  'Device not found':
+    'Zu dieser Seriennummer ist kein Gerät vorhanden. Bitte prüfe die Nummer.',
+}
+
 async function callProcessApi(params: Record<string, string>): Promise<unknown> {
   if (!processApiUrl) {
     throw new Error('Die Prozess-API ist nicht konfiguriert.')
@@ -68,7 +76,8 @@ async function callProcessApi(params: Record<string, string>): Promise<unknown> 
   if (!response.ok) {
     const apiError =
       body && typeof body === 'object' && 'error' in body ? String((body as ApiErrorBody).error) : undefined
-    throw new Error(apiError || `Die Abfrage ist fehlgeschlagen (${response.status}).`)
+    const message = apiError ? (API_ERROR_TEXTS[apiError] ?? apiError) : ''
+    throw new Error(message || `Die Abfrage ist fehlgeschlagen (${response.status}).`)
   }
 
   return body
