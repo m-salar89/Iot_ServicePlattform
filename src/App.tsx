@@ -9,6 +9,8 @@ import {
 import AuthScreen from './auth/AuthScreen'
 import DataFilter, { type DataFilterValues } from './filter/DataFilter'
 import { formatProcessDateTime } from './filter/formatProcessDateTime'
+import ProcessChart from './process/ProcessChart'
+import { buildProcessView } from './process/processView'
 import {
   getSignedInUser,
   isCognitoConfigured,
@@ -182,11 +184,13 @@ export default function App() {
                   <ul className="process-list">
                     {processResult.processes.map((process) => {
                       const startedAt = formatProcessDateTime(process)
+                      const view = buildProcessView(process)
                       return (
                         <li key={process.key}>
                           <strong>{startedAt ?? process.id}</strong>
                           {startedAt && <span className="process-id">{process.id}</span>}
                           <code>{process.key}</code>
+                          {view && <ProcessChart view={view} />}
                           {process.data !== undefined && (
                             <details>
                               <summary>Prozessdaten anzeigen</summary>
