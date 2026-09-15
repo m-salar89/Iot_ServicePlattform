@@ -7,8 +7,10 @@ import {
   signUp,
 } from 'aws-amplify/auth'
 
-const userPoolId = import.meta.env.VITE_COGNITO_USER_POOL_ID
-const userPoolClientId = import.meta.env.VITE_COGNITO_CLIENT_ID
+// Mitarbeiter-Pool der Service-Plattform. Der Kunden-Pool wird hier nie verwendet,
+// den kennt nur die Lambda (CUSTOMER_USER_POOL_ID) fuer die Prozess-Suche.
+const userPoolId = import.meta.env.VITE_STAFF_USER_POOL_ID
+const userPoolClientId = import.meta.env.VITE_STAFF_COGNITO_CLIENT_ID
 
 export const isCognitoConfigured = Boolean(userPoolId && userPoolClientId)
 

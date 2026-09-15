@@ -19,8 +19,11 @@ Die App läuft danach unter `http://localhost:5173`.
 
 1. `.env.example` nach `.env` kopieren.
 2. Werte aus der Cognito-Konsole eintragen:
-   - `VITE_COGNITO_USER_POOL_ID`
-   - `VITE_COGNITO_CLIENT_ID`
+   - `VITE_STAFF_USER_POOL_ID` (Mitarbeiter-Pool, nicht der Kunden-Pool)
+   - `VITE_STAFF_COGNITO_CLIENT_ID`
+
+   Der Kunden-Pool (`CUSTOMER_USER_POOL_ID`) wird vom Frontend nicht gebraucht,
+   er gehoert in die Konfiguration der Lambda `zl_sp_get_processes`.
 3. App-Client: Public Client, **kein** Secret, Auth-Flow `ALLOW_USER_SRP_AUTH`.
 4. `npm run dev`
 
