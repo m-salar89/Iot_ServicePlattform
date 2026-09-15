@@ -54,8 +54,8 @@ export default function App() {
     }
   }
 
-  async function loadProcesses(serialNumber: string) {
-    const result = await getProcessesBySerialNumber(serialNumber)
+  async function loadProcesses(serialNumber: string, userId?: string) {
+    const result = await getProcessesBySerialNumber(serialNumber, userId)
     setSelectedSerial(result.serialNumber)
     setProcessResult(result)
   }
@@ -85,7 +85,7 @@ export default function App() {
     setProcessResult(null)
     setLoadingProcesses(true)
     try {
-      await loadProcesses(serialNumber)
+      await loadProcesses(serialNumber, deviceResult?.userId)
     } catch (error) {
       setProcessError(error instanceof Error ? error.message : 'Die Datenabfrage ist fehlgeschlagen.')
     } finally {

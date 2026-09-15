@@ -83,8 +83,16 @@ async function callProcessApi(params: Record<string, string>): Promise<unknown> 
   return body
 }
 
-export async function getProcessesBySerialNumber(serialNumber: string): Promise<ProcessResponse> {
-  return (await callProcessApi({ serialNumber: serialNumber.trim() })) as ProcessResponse
+export async function getProcessesBySerialNumber(
+  serialNumber: string,
+  userId?: string,
+): Promise<ProcessResponse> {
+  const params: Record<string, string> = { serialNumber: serialNumber.trim() }
+  // Dasselbe Gerät kann bei mehreren Kunden liegen, deshalb die bekannte User-ID mitgeben.
+  if (userId?.trim()) {
+    params.userId = userId.trim()
+  }
+  return (await callProcessApi(params)) as ProcessResponse
 }
 
 export async function getDevicesByEmail(email: string): Promise<DeviceListResponse> {
