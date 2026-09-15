@@ -172,3 +172,9 @@
   opacity: 0.7;
   cursor: wait;
 }
+
+.process-owner {
+  color: var(--teal);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}

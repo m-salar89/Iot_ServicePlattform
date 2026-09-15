@@ -7,18 +7,31 @@ export const isProcessApiConfigured = Boolean(processApiUrl)
 export type ProcessEntry = {
   id: string
   key: string
+  userId?: string
+  email?: string
   timestamp?: number | null
   lastModified?: string
   data?: unknown
   error?: string
 }
 
-export type ProcessResponse = {
-  serialNumber: string
+export type ProcessOwner = {
   userId: string
+  email: string
   prefix: string
   processCount: number
+}
+
+export type ProcessResponse = {
+  serialNumber: string
+  processCount: number
   processes: ProcessEntry[]
+  ownerCount?: number
+  owners?: ProcessOwner[]
+  // Nur gesetzt, wenn das Gerät genau einem Kunden gehört.
+  userId?: string
+  email?: string
+  prefix?: string
 }
 
 export type DeviceEntry = {

@@ -174,10 +174,23 @@ export default function App() {
             {processResult && (
               <section className="process-result" aria-live="polite">
                 <h3>{processResult.processCount} Prozesse gefunden</h3>
-                <p>
-                  Seriennummer <strong>{processResult.serialNumber}</strong> · User-ID{' '}
-                  <strong>{processResult.userId}</strong>
-                </p>
+                {processResult.owners && processResult.owners.length > 1 ? (
+                  <p>
+                    Seriennummer <strong>{processResult.serialNumber}</strong> ·{' '}
+                    <strong>{processResult.owners.length} Kunden</strong> mit diesem Gerät
+                  </p>
+                ) : (
+                  <p>
+                    Seriennummer <strong>{processResult.serialNumber}</strong> · User-ID{' '}
+                    <strong>{processResult.userId ?? 'unbekannt'}</strong>
+                    {processResult.email && (
+                      <>
+                        {' · '}
+                        <strong>{processResult.email}</strong>
+                      </>
+                    )}
+                  </p>
+                )}
                 {processResult.processes.length === 0 ? (
                   <p>Für diesen Ofen sind keine Prozesse vorhanden.</p>
                 ) : (
@@ -189,6 +202,12 @@ export default function App() {
                         <li key={process.key}>
                           <strong>{startedAt ?? process.id}</strong>
                           {startedAt && <span className="process-id">{process.id}</span>}
+                          {(process.email || process.userId) && (
+                            <span className="process-owner">
+                              {process.email || 'E-Mail unbekannt'}
+                              {process.userId && ` · ${process.userId}`}
+                            </span>
+                          )}
                           <code>{process.key}</code>
                           {view && <ProcessChart view={view} />}
                           {process.data !== undefined && (
