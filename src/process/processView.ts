@@ -105,6 +105,20 @@ export function formatSensorValue(value: number | null): string {
   return String(Math.round(value * 1000) / 1000)
 }
 
+export function formatTimestamp(seconds: number): string {
+  const millis = seconds > 1_000_000_000_000 ? seconds : seconds * 1000
+  return new Intl.DateTimeFormat('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/Berlin',
+  }).format(new Date(millis))
+}
+
 export function buildProcessView(process: ProcessEntry): ProcessView | null {
   const payload = asRecord(process.data)
   if (!payload) return null
