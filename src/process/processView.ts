@@ -65,14 +65,29 @@ function median(values: number[]): number {
   return sorted[Math.floor(sorted.length / 2)]
 }
 
+// errorFlags enthaelt Geraete-Rohbytes, die als Text teils unlesbar sind.
+// Sie werden escaped statt entfernt, sonst faellt der Wert einzelner
+// Zeitstempel komplett weg und alle Zeilen sehen gleich aus.
+function readableFlagValue(raw: unknown): string {
+  const text = String(raw ?? '')
+  return Array.from(text)
+    .map((char) => {
+      const code = char.codePointAt(0) ?? 0
+      if (code >= 0x20 && code <= 0x7e) return char
+      const hex = code.toString(16).toUpperCase()
+      return code <= 0xff ? `\\x${hex.padStart(2, '0')}` : `\\u${hex.padStart(4, '0')}`
+    })
+    .join('')
+    .trim()
+}
+
 function toErrorFlags(value: unknown): Record<string, string> {
   const record = asRecord(value)
   if (!record) return {}
 
   const flags: Record<string, string> = {}
   for (const [key, raw] of Object.entries(record)) {
-    // errorFlags enthaelt Geraete-Rohbytes, die als Text unlesbar sind.
-    flags[key] = String(raw ?? '').replace(/[^\x20-\x7E]/g, '').trim()
+    flags[key] = readableFlagValue(raw)
   }
   return flags
 }
@@ -95,7 +110,7 @@ function pickSensors(row: Record<string, unknown>): SensorValues {
 
 export function formatErrorFlags(point: ChartPoint): string {
   const entries = Object.entries(point.errorFlags)
-  if (entries.length === 0) return point.error ? 'Fehler' : ''
+  if (entries.length === 0) return point.error ? 'Fehler ohne Flag' : ''
   return entries.map(([key, value]) => (value ? `${key}: ${value}` : key)).join(' · ')
 }
 

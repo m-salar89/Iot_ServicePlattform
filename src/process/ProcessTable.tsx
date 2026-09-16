@@ -18,6 +18,7 @@ export default function ProcessTable({ view }: Props) {
               {SENSOR_KEYS.map((key) => (
                 <th key={key}>{key}</th>
               ))}
+              <th>Error</th>
               <th>errorFlags</th>
             </tr>
           </thead>
@@ -30,6 +31,7 @@ export default function ProcessTable({ view }: Props) {
                   {SENSOR_KEYS.map((key) => (
                     <td key={key}>{formatSensorValue(point.sensors[key])}</td>
                   ))}
+                  <td>{point.error ? 'Ja' : 'Nein'}</td>
                   <td className={flags ? 'error-flags' : undefined}>{flags || '-'}</td>
                 </tr>
               )
