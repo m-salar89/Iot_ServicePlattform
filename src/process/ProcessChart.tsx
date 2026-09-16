@@ -1,5 +1,5 @@
-import type { ChartPoint, ProcessView } from './processView'
-import { formatElapsed } from './processView'
+import type { ProcessView } from './processView'
+import { formatElapsed, formatErrorFlags } from './processView'
 import './ProcessChart.css'
 
 const WIDTH = 640
@@ -11,18 +11,17 @@ type Props = {
   view: ProcessView
 }
 
-function flagLabel(point: ChartPoint): string {
-  const entries = Object.entries(point.errorFlags)
-  if (entries.length === 0) return 'Fehler'
-  return entries.map(([key, value]) => (value ? `${key}: ${value}` : key)).join(' · ')
-}
-
 export default function ProcessChart({ view }: Props) {
+  const points = view.points.filter(
+    (point): point is typeof point & { temperature: number } => point.temperature !== null,
+  )
+  if (points.length === 0) return null
+
   const plotWidth = WIDTH - PAD.left - PAD.right
   const plotHeight = HEIGHT - PAD.top - PAD.bottom
 
-  const duration = view.points[view.points.length - 1].elapsed || 1
-  const temperatures = view.points.map((point) => point.temperature)
+  const duration = points[points.length - 1].elapsed || 1
+  const temperatures = points.map((point) => point.temperature)
   const lowest = Math.min(...temperatures)
   const highest = Math.max(...temperatures)
   const span = highest - lowest || 1
@@ -33,7 +32,7 @@ export default function ProcessChart({ view }: Props) {
   const toY = (temperature: number) =>
     PAD.top + (1 - (temperature - yMin) / (yMax - yMin)) * plotHeight
 
-  const line = view.points
+  const line = points
     .map((point) => `${toX(point.elapsed).toFixed(1)},${toY(point.temperature).toFixed(1)}`)
     .join(' ')
 
@@ -92,10 +91,10 @@ export default function ProcessChart({ view }: Props) {
             key={`error-${index}`}
             className="chart-error"
             cx={toX(point.elapsed)}
-            cy={toY(point.temperature)}
+            cy={toY(point.temperature ?? lowest)}
             r={4.5}
           >
-            <title>{`${formatElapsed(point.elapsed)} · ${flagLabel(point)}`}</title>
+            <title>{`${formatElapsed(point.elapsed)} · ${formatErrorFlags(point)}`}</title>
           </circle>
         ))}
       </svg>

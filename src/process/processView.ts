@@ -1,9 +1,30 @@
 import type { ProcessEntry } from '../api/processes'
 
+export const SENSOR_KEYS = [
+  'CT',
+  'TT',
+  'PCBAT',
+  'PAT',
+  'CTAD',
+  'LP',
+  'ULS',
+  'DLS',
+  'CVMm',
+  'CVADC',
+  'CPBar',
+  'CPP',
+  'PEP',
+  'SHP',
+] as const
+
+export type SensorKey = (typeof SENSOR_KEYS)[number]
+export type SensorValues = Record<SensorKey, number | null>
+
 export type ChartPoint = {
   t: number
   elapsed: number
-  temperature: number
+  temperature: number | null
+  sensors: SensorValues
   error: boolean
   errorFlags: Record<string, string>
 }
@@ -64,6 +85,26 @@ function pickString(source: Record<string, unknown>, keys: string[]): string | n
   return null
 }
 
+function pickSensors(row: Record<string, unknown>): SensorValues {
+  const sensors = {} as SensorValues
+  for (const key of SENSOR_KEYS) {
+    sensors[key] = toNumber(row[key])
+  }
+  return sensors
+}
+
+export function formatErrorFlags(point: ChartPoint): string {
+  const entries = Object.entries(point.errorFlags)
+  if (entries.length === 0) return point.error ? 'Fehler' : ''
+  return entries.map(([key, value]) => (value ? `${key}: ${value}` : key)).join(' · ')
+}
+
+export function formatSensorValue(value: number | null): string {
+  if (value === null) return "-"
+  if (Number.isInteger(value)) return String(value)
+  return String(Math.round(value * 1000) / 1000)
+}
+
 export function buildProcessView(process: ProcessEntry): ProcessView | null {
   const payload = asRecord(process.data)
   if (!payload) return null
@@ -78,13 +119,14 @@ export function buildProcessView(process: ProcessEntry): ProcessView | null {
   for (let index = 0; index < paired; index += 1) {
     const event = events[index]
     const t = toNumber(event.tS ?? event.ts ?? event.Timestamp)
-    const temperature = toNumber(sensordata[index].CT)
-    if (t === null || temperature === null) continue
+    if (t === null) continue
 
+    const sensors = pickSensors(sensordata[index])
     measured.push({
       t,
       elapsed: 0,
-      temperature,
+      temperature: sensors.CT,
+      sensors,
       error: event.Error === true,
       errorFlags: toErrorFlags(event.errorFlags),
     })

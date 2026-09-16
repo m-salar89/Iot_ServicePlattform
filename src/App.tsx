@@ -10,6 +10,7 @@ import AuthScreen from './auth/AuthScreen'
 import DataFilter, { type DataFilterValues } from './filter/DataFilter'
 import { formatProcessDateTime } from './filter/formatProcessDateTime'
 import ProcessChart from './process/ProcessChart'
+import ProcessTable from './process/ProcessTable'
 import { buildProcessView } from './process/processView'
 import {
   getSignedInUser,
@@ -210,12 +211,14 @@ export default function App() {
                           )}
                           <code>{process.key}</code>
                           {view && <ProcessChart view={view} />}
-                          {process.data !== undefined && (
+                          {view ? (
+                            <ProcessTable view={view} />
+                          ) : process.data !== undefined ? (
                             <details>
                               <summary>Prozessdaten anzeigen</summary>
                               <pre>{JSON.stringify(process.data, null, 2)}</pre>
                             </details>
-                          )}
+                          ) : null}
                         </li>
                       )
                     })}

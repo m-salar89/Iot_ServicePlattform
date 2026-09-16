@@ -1,0 +1,52 @@
+.process-table {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.process-table-wrap {
+  max-height: 28rem;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.process-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.process-table th,
+.process-table td {
+  padding: 0.4rem 0.55rem;
+  text-align: right;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.process-table th:first-child,
+.process-table td:first-child,
+.process-table th:last-child,
+.process-table td:last-child {
+  text-align: left;
+}
+
+.process-table thead th {
+  position: sticky;
+  top: 0;
+  background: #1c2228;
+  color: var(--muted);
+  font-weight: 600;
+  z-index: 1;
+}
+
+.process-table tbody tr.has-error {
+  background: rgba(255, 141, 115, 0.12);
+}
+
+.process-table td.error-flags {
+  color: #ff8d73;
+  white-space: normal;
+  min-width: 8rem;
+}
