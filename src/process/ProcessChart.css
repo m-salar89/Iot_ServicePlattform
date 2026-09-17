@@ -71,3 +71,27 @@
 .chart-legend-error {
   color: #ff8d73;
 }
+.chart-prog {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.5rem;
+}
+
+.chart-prog-item {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--line);
+  border-radius: 0.45rem;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.chart-prog-item span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.chart-prog-item strong {
+  font-size: 0.92rem;
+  font-weight: 600;
+}

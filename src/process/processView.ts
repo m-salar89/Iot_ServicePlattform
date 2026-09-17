@@ -1,4 +1,6 @@
 import type { ProcessEntry } from '../api/processes'
+import { ovenTypeKey, ovenTypeLabel } from './ovenTypes'
+import { parseProgInfo, type ProgramInfo } from './progInfo'
 
 export const SENSOR_KEYS = [
   'CT',
@@ -31,7 +33,10 @@ export type ChartPoint = {
 
 export type ProcessView = {
   programName: string | null
+  program: ProgramInfo | null
   deviceKind: string | null
+  deviceTypeId: number | null
+  deviceTypeKey: string | null
   deviceSerial: string | null
   points: ChartPoint[]
   errors: ChartPoint[]
@@ -173,9 +178,14 @@ export function buildProcessView(process: ProcessEntry): ProcessView | null {
   const points = sorted.map((point) => ({ ...point, elapsed: point.t - start }))
 
   const serial = metadata.dSN
+  const program = parseProgInfo(payload.progInfo ?? payload.Programinfo ?? payload.programInfo)
+  const typeId = toNumber(metadata.dType)
   return {
-    programName: pickString(metadata, ['programName', 'progName', 'pName']),
-    deviceKind: pickString(metadata, ['dKind']),
+    programName: program?.name ?? pickString(metadata, ['programName', 'progName', 'pName']),
+    program,
+    deviceKind: typeId !== null ? ovenTypeLabel(typeId) : pickString(metadata, ['dKind']),
+    deviceTypeId: typeId,
+    deviceTypeKey: typeId !== null ? ovenTypeKey(typeId) : null,
     deviceSerial: serial === null || serial === undefined ? null : String(serial),
     points,
     errors: points.filter((point) => point.error),

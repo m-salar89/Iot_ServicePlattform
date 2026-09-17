@@ -44,6 +44,7 @@ export default function ProcessChart({ view }: Props) {
         </strong>
         <span className="chart-device">
           {view.deviceKind ?? 'Gerät'}
+          {view.deviceTypeId !== null && ` (${view.deviceTypeId})`}
           {view.deviceSerial && ` · SN ${view.deviceSerial}`}
         </span>
       </div>
@@ -98,6 +99,17 @@ export default function ProcessChart({ view }: Props) {
           </circle>
         ))}
       </svg>
+
+      {view.program && view.program.params.length > 0 && (
+        <div className="chart-prog">
+          {view.program.params.map((param) => (
+            <div key={param.slot} className="chart-prog-item">
+              <span>{param.label}</span>
+              <strong>{param.display}</strong>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="chart-legend">
         <span>Ist-Temperatur (CT) in °C</span>
