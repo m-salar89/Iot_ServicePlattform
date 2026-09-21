@@ -31,9 +31,58 @@
   font-size: 0.85rem;
 }
 
+.chart-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.chart-tools-hint {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.chart-tools-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chart-tool-btn {
+  padding: 0.28rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.22);
+  color: inherit;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.chart-tool-btn:hover:not(:disabled) {
+  border-color: var(--teal);
+}
+
+.chart-tool-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
 .chart svg {
   width: 100%;
   height: auto;
+}
+
+/* touch-action verhindert, dass beim Verschieben die Seite mitscrollt. */
+.chart-plot {
+  touch-action: none;
+  cursor: grab;
+}
+
+.chart-plot.is-panning {
+  cursor: grabbing;
 }
 
 .chart-grid {
