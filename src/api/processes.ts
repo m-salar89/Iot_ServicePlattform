@@ -40,6 +40,8 @@ export type ProcessResponse = {
 
 export type DeviceEntry = {
   serialNumber: string
+  deviceType?: number | string
+  deviceKind?: string
 }
 
 export type DeviceListResponse = {

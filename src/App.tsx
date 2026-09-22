@@ -155,7 +155,9 @@ export default function App() {
                   <p>Dieser Benutzer hat noch keine Prozesse.</p>
                 ) : (
                   <ul className="device-list">
-                    {deviceResult.devices.map((device) => (
+                    {deviceResult.devices.map((device) => {
+                      const typeLabel = formatStoredDeviceType(device.deviceType, device.deviceKind)
+                      return (
                       <li key={device.serialNumber}>
                         <button
                           type="button"
@@ -163,11 +165,15 @@ export default function App() {
                           onClick={() => void handleSelectDevice(device.serialNumber)}
                           disabled={loadingProcesses}
                         >
-                          <strong>{device.serialNumber}</strong>
+                          <span className="device-title">
+                            <strong>{device.serialNumber}</strong>
+                            {typeLabel && <span className="device-type">{typeLabel}</span>}
+                          </span>
                           <span>Prozesse anzeigen</span>
                         </button>
                       </li>
-                    ))}
+                      )
+                    })}
                   </ul>
                 )}
               </section>
