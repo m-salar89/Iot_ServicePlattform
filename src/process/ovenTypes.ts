@@ -24,3 +24,19 @@ export function ovenTypeLabel(dType: number): string {
   if (!key) return `Typ ${dType}`
   return key.replace(/^OVEN_TYPE_/, '').replace(/_/g, ' ')
 }
+
+export function formatStoredDeviceType(
+  deviceType: number | string | null | undefined,
+  deviceKind?: string | null,
+): string | null {
+  if (typeof deviceType === 'number' && Number.isFinite(deviceType)) {
+    return ovenTypeLabel(deviceType)
+  }
+  if (typeof deviceType === 'string') {
+    const text = deviceType.trim()
+    if (/^\d+$/.test(text)) return ovenTypeLabel(Number(text))
+    if (text) return text
+  }
+  const kind = deviceKind?.trim()
+  return kind || null
+}

@@ -12,6 +12,7 @@ import { formatProcessDateTime } from './filter/formatProcessDateTime'
 import ProcessChart from './process/ProcessChart'
 import ProcessTable from './process/ProcessTable'
 import { buildProcessView } from './process/processView'
+import { formatStoredDeviceType } from './process/ovenTypes'
 import {
   getSignedInUser,
   isCognitoConfigured,
@@ -175,23 +176,35 @@ export default function App() {
             {processResult && (
               <section className="process-result" aria-live="polite">
                 <h3>{processResult.processCount} Prozesse gefunden</h3>
-                {processResult.owners && processResult.owners.length > 1 ? (
-                  <p>
-                    Seriennummer <strong>{processResult.serialNumber}</strong> ·{' '}
-                    <strong>{processResult.owners.length} Kunden</strong> mit diesem Gerät
-                  </p>
-                ) : (
-                  <p>
-                    Seriennummer <strong>{processResult.serialNumber}</strong> · User-ID{' '}
-                    <strong>{processResult.userId ?? 'unbekannt'}</strong>
-                    {processResult.email && (
-                      <>
-                        {' · '}
-                        <strong>{processResult.email}</strong>
-                      </>
-                    )}
-                  </p>
-                )}
+                <p>
+                  Seriennummer <strong>{processResult.serialNumber}</strong>
+                  {formatStoredDeviceType(processResult.deviceType, processResult.deviceKind) && (
+                    <>
+                      {' · '}
+                      Gerätetyp{' '}
+                      <strong>
+                        {formatStoredDeviceType(processResult.deviceType, processResult.deviceKind)}
+                      </strong>
+                    </>
+                  )}
+                  {processResult.owners && processResult.owners.length > 1 ? (
+                    <>
+                      {' · '}
+                      <strong>{processResult.owners.length} Kunden</strong> mit diesem Gerät
+                    </>
+                  ) : (
+                    <>
+                      {' · '}
+                      User-ID <strong>{processResult.userId ?? 'unbekannt'}</strong>
+                      {processResult.email && (
+                        <>
+                          {' · '}
+                          <strong>{processResult.email}</strong>
+                        </>
+                      )}
+                    </>
+                  )}
+                </p>
                 {processResult.processes.length === 0 ? (
                   <p>Für diesen Ofen sind keine Prozesse vorhanden.</p>
                 ) : (

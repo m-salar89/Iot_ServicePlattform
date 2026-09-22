@@ -20,6 +20,8 @@ export type ProcessOwner = {
   email: string
   prefix: string
   processCount: number
+  deviceType?: number | string
+  deviceKind?: string
 }
 
 export type ProcessResponse = {
@@ -32,6 +34,8 @@ export type ProcessResponse = {
   userId?: string
   email?: string
   prefix?: string
+  deviceType?: number | string
+  deviceKind?: string
 }
 
 export type DeviceEntry = {
