@@ -19,7 +19,7 @@ const PARAM_BY_CODE: Record<number, string> = {
   135: 'Vakuum',
   120: 'Starttemperatur',
   122: 'Vortrockenzeit',
-  123: 'Schlusszeit',
+  123: 'schliesszeit',
   162: 'Endtemperatur',
 }
 
@@ -27,7 +27,7 @@ const PARAM_BY_SLOT: Record<number, string> = {
   0: 'Vakuum',
   1: 'Starttemperatur',
   2: 'Vortrockenzeit',
-  3: 'Schlusszeit',
+  3: 'schliesszeit',
   7: 'Endtemperatur',
 }
 
