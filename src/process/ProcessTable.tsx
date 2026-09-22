@@ -1,15 +1,28 @@
+import type { MouseEvent } from 'react'
 import type { ProcessView } from './processView'
 import { SENSOR_KEYS, formatErrorFlags, formatSensorValue, formatTimestamp } from './processView'
 import './ProcessTable.css'
 
 type Props = {
   view: ProcessView
+  onDownload: () => void
 }
 
-export default function ProcessTable({ view }: Props) {
+export default function ProcessTable({ view, onDownload }: Props) {
+  function download(event: MouseEvent<HTMLButtonElement>) {
+    event.preventDefault()
+    event.stopPropagation()
+    onDownload()
+  }
+
   return (
     <details className="process-table" open>
-      <summary>Prozessdaten anzeigen</summary>
+      <summary>
+        <span>Prozessdaten anzeigen</span>
+        <button type="button" className="process-download" onClick={download}>
+          Als Excel herunterladen
+        </button>
+      </summary>
       <div className="process-table-wrap">
         <table>
           <thead>

@@ -230,18 +230,12 @@ export default function App() {
                             </span>
                           )}
                           <code>{process.key}</code>
-                          {view && (
-                            <button
-                              type="button"
-                              className="process-download"
-                              onClick={() => downloadProcessExcel(process, view)}
-                            >
-                              Als Excel herunterladen
-                            </button>
-                          )}
                           {view && <ProcessChart view={view} />}
                           {view ? (
-                            <ProcessTable view={view} />
+                            <ProcessTable
+                              view={view}
+                              onDownload={() => downloadProcessExcel(process, view)}
+                            />
                           ) : process.data !== undefined ? (
                             <details>
                               <summary>Prozessdaten anzeigen</summary>
