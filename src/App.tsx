@@ -11,6 +11,7 @@ import DataFilter, { type DataFilterValues } from './filter/DataFilter'
 import { formatProcessDateTime } from './filter/formatProcessDateTime'
 import ProcessChart from './process/ProcessChart'
 import ProcessTable from './process/ProcessTable'
+import { downloadProcessExcel } from './process/exportProcessExcel'
 import { buildProcessView } from './process/processView'
 import { formatStoredDeviceType } from './process/ovenTypes'
 import {
@@ -229,6 +230,15 @@ export default function App() {
                             </span>
                           )}
                           <code>{process.key}</code>
+                          {view && (
+                            <button
+                              type="button"
+                              className="process-download"
+                              onClick={() => downloadProcessExcel(process, view)}
+                            >
+                              Als Excel herunterladen
+                            </button>
+                          )}
                           {view && <ProcessChart view={view} />}
                           {view ? (
                             <ProcessTable view={view} />

@@ -136,6 +136,22 @@
   font-size: 0.85rem;
 }
 
+.process-download {
+  justify-self: start;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: rgba(0, 0, 0, 0.22);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.process-download:hover {
+  border-color: var(--teal);
+}
+
 .device-list {
   display: grid;
   gap: 0.75rem;
