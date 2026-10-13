@@ -118,9 +118,9 @@
 .config-warning {
   width: min(1080px, calc(100% - 2rem));
   margin: 2rem auto 0;
-  border: 1px solid #6b4a16;
-  background: rgba(232, 163, 23, 0.08);
-  color: #f0d39a;
+  border: 1px solid #e2c48a;
+  background: #fff8eb;
+  color: #6b4a10;
   border-radius: 0.9rem;
   padding: 0.9rem 1rem;
 }

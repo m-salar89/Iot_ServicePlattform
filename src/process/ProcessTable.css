@@ -8,7 +8,7 @@
   overflow: auto;
   border: 1px solid var(--line);
   border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.22);
+  background: #ffffff;
 }
 
 .process-table table {
@@ -23,7 +23,7 @@
 .process-table td {
   padding: 0.28rem 0.4rem;
   text-align: right;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--line);
 }
 
 .process-table th:first-child,
@@ -36,7 +36,7 @@
 .process-table thead th {
   position: sticky;
   top: 0;
-  background: #1c2228;
+  background: #f4f6f8;
   color: var(--muted);
   font-weight: 600;
   z-index: 1;
@@ -95,7 +95,7 @@
   padding: 0.28rem 0.65rem;
   border: 1px solid var(--line);
   border-radius: 0.4rem;
-  background: rgba(0, 0, 0, 0.22);
+  background: #ffffff;
   color: var(--text);
   font: inherit;
   font-size: 0.85rem;

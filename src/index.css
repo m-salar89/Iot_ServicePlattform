@@ -1,14 +1,14 @@
 :root {
-  color-scheme: dark;
-  --bg: #071018;
-  --bg-elevated: #0e1a24;
-  --bg-card: #12212c;
-  --line: #1e3344;
-  --text: #e8eef2;
-  --muted: #8aa0b0;
-  --teal: #2ec4b6;
-  --amber: #e8a317;
-  --ok: #3dd68c;
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-elevated: #f4f6f8;
+  --bg-card: #ffffff;
+  --line: #d9dee3;
+  --text: #1b1f24;
+  --muted: #5c6670;
+  --teal: #0e7f76;
+  --amber: #9a6708;
+  --ok: #1f9d5a;
   font-family: "Source Sans 3", "Segoe UI", sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -31,10 +31,7 @@ body,
 
 body {
   margin: 0;
-  background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(46, 196, 182, 0.12), transparent 50%),
-    radial-gradient(900px 420px at 100% 0%, rgba(232, 163, 23, 0.08), transparent 45%),
-    var(--bg);
+  background: #ffffff;
 }
 
 button,
