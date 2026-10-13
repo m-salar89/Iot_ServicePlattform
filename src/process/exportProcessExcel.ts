@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx'
 import type { ProcessEntry } from '../api/processes'
-import { SENSOR_KEYS, formatErrorFlags, formatTimestamp, type ProcessView } from './processView'
+import { SENSOR_KEYS, SENSOR_LABELS, formatErrorFlags, formatTimestamp, type ProcessView } from './processView'
 
 function fileName(process: ProcessEntry, view: ProcessView): string {
   const serial = (view.deviceSerial || 'Geraet').replace(/[^\w.-]+/g, '_')
@@ -15,7 +15,7 @@ function sensorCell(value: number | null): number | string {
 
 export function downloadProcessExcel(process: ProcessEntry, view: ProcessView): void {
   const rows: (string | number)[][] = [
-    ['Zeit', ...SENSOR_KEYS, 'Error', 'errorFlags'],
+    ['Zeit', ...SENSOR_KEYS.map((key) => SENSOR_LABELS[key]), 'Error', 'errorFlags'],
     ...view.points.map((point) => {
       const flags = formatErrorFlags(point)
       return [

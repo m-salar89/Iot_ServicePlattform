@@ -22,6 +22,23 @@ export const SENSOR_KEYS = [
 export type SensorKey = (typeof SENSOR_KEYS)[number]
 export type SensorValues = Record<SensorKey, number | null>
 
+export const SENSOR_LABELS: Record<SensorKey, string> = {
+  CT: 'CurrentTemp',
+  TT: 'TargetTemp',
+  PCBAT: 'PcbAmbientTemp',
+  PAT: 'PressAmbientTemp',
+  CTAD: 'CurrentTempAD',
+  LP: 'LiftPosition',
+  ULS: 'IsUpLimitSwitch',
+  DLS: 'IsDownLimitSwitch',
+  CVMm: 'CurrentVacuumMm',
+  CVADC: 'CurrentVacuumADC',
+  CPBar: 'CurrentPressureBar',
+  CPP: 'CurrentPressPosition',
+  PEP: 'PressEndPosition',
+  SHP: 'SinterHeaterPercent',
+}
+
 export type ChartPoint = {
   t: number
   elapsed: number

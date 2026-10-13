@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 import type { ProcessView } from './processView'
-import { SENSOR_KEYS, formatErrorFlags, formatSensorValue, formatTimestamp } from './processView'
+import { SENSOR_KEYS, SENSOR_LABELS, formatErrorFlags, formatSensorValue, formatTimestamp } from './processView'
 import './ProcessTable.css'
 
 type Props = {
@@ -29,7 +29,7 @@ export default function ProcessTable({ view, onDownload }: Props) {
             <tr>
               <th>Zeit</th>
               {SENSOR_KEYS.map((key) => (
-                <th key={key}>{key}</th>
+                <th key={key}>{SENSOR_LABELS[key]}</th>
               ))}
               <th>Error</th>
               <th>errorFlags</th>
