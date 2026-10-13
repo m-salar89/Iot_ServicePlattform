@@ -8,6 +8,10 @@ type Props = {
   onDownload: () => void
 }
 
+function sensorNameLines(label: string): string[] {
+  return label.split(/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/).filter(Boolean)
+}
+
 export default function ProcessTable({ view, onDownload }: Props) {
   function download(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault()
@@ -29,7 +33,14 @@ export default function ProcessTable({ view, onDownload }: Props) {
             <tr>
               <th>Zeit</th>
               {SENSOR_KEYS.map((key) => (
-                <th key={key}>{SENSOR_LABELS[key]}</th>
+                <th key={key} className="sensor-col">
+                  {sensorNameLines(SENSOR_LABELS[key]).map((line, index) => (
+                    <span key={index}>
+                      {index > 0 && <br />}
+                      {line}
+                    </span>
+                  ))}
+                </th>
               ))}
               <th>Error</th>
               <th>errorFlags</th>
