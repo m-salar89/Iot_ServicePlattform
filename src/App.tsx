@@ -221,7 +221,7 @@ export default function App() {
                       const view = buildProcessView(process)
                       return (
                         <li key={process.key}>
-                          <strong>{startedAt ?? process.id}</strong>
+                          <strong>{startedAt ? `Start ${startedAt}` : process.id}</strong>
                           {startedAt && <span className="process-id">{process.id}</span>}
                           {(process.email || process.userId) && (
                             <span className="process-owner">
@@ -229,7 +229,6 @@ export default function App() {
                               {process.userId && ` · ${process.userId}`}
                             </span>
                           )}
-                          <code>{process.key}</code>
                           {view && <ProcessChart view={view} />}
                           {view ? (
                             <ProcessTable

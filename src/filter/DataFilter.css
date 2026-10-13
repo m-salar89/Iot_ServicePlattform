@@ -111,12 +111,6 @@
   background: var(--bg-elevated);
 }
 
-.process-list code {
-  overflow-wrap: anywhere;
-  color: var(--muted);
-  font-size: 0.78rem;
-}
-
 .process-list summary {
   cursor: pointer;
   color: var(--teal);

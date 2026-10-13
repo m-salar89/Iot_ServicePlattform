@@ -24,9 +24,16 @@ function toUnixSeconds(value: unknown): number | null {
   return Math.floor(parsed / 1000)
 }
 
+const EARLIEST_PROCESS_SECONDS = 1_577_836_800
+
+function plausibleStart(seconds: number | null): number | null {
+  if (seconds === null || seconds < EARLIEST_PROCESS_SECONDS) return null
+  return seconds
+}
+
 function timestampFromProcessId(id: string): number | null {
   const match = /^(?:P_|ERR_)(\d+)/.exec(id)
-  return match ? toUnixSeconds(match[1]) : null
+  return match ? plausibleStart(toUnixSeconds(match[1])) : null
 }
 
 function timestampFromPayload(data: unknown): number | null {
@@ -67,10 +74,12 @@ function timestampFromPayload(data: unknown): number | null {
 }
 
 export function formatProcessDateTime(process: ProcessEntry): string | null {
+  // P_/ERR_ ist der Zeitpunkt der Start-Datei. Der erste Messpunkt kann die
+  // falsch gestellte Ofen-Uhr sein und liegt dann Stunden neben dem echten Start.
   const seconds =
-    toUnixSeconds(process.timestamp) ??
-    timestampFromPayload(process.data) ??
     timestampFromProcessId(process.id) ??
+    plausibleStart(timestampFromPayload(process.data)) ??
+    plausibleStart(toUnixSeconds(process.timestamp)) ??
     toUnixSeconds(process.lastModified)
   if (seconds === null) return null
 
