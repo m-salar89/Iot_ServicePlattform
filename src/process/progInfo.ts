@@ -59,6 +59,8 @@ const PARAM_BY_CODE: Record<number, string> = {
   311: 'Haltezeit 3',
   315: 'Dummy Vakuum',
   365: 'Kühl-Endtemperatur',
+  640: 'Peak-Finaltemperatur',
+  641: 'Peak-Finalzeit',
 }
 
 const VALUE_BY_CODE: Record<number, string> = {
