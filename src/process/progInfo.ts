@@ -49,6 +49,16 @@ const PARAM_BY_CODE: Record<number, string> = {
   256: 'Temperzeit',
   134: 'maximale Temperatur',
   159: 'Öffnungszeit',
+  126: 'Heizrate 1',
+  127: 'Finaltemperatur 1',
+  128: 'Haltezeit 1',
+  129: 'Heizrate 2',
+  130: 'Finaltemperatur 2',
+  309: 'Heizrate 3',
+  310: 'Finaltemperatur 3',
+  311: 'Haltezeit 3',
+  315: 'Dummy Vakuum',
+  365: 'Kühl-Endtemperatur',
 }
 
 const VALUE_BY_CODE: Record<number, string> = {
@@ -60,6 +70,7 @@ const VALUE_BY_CODE: Record<number, string> = {
 const UNIT_CELSIUS = 151
 const UNIT_CELSIUS_PER_MIN = 249
 const UNIT_TIME_SECONDS = 252
+const UNIT_PERCENT = 314
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -99,6 +110,7 @@ export function formatProgValue(value: number, unit: number | null): string {
   if (unit === UNIT_CELSIUS) return formatNumber(value) + ' \u00b0C'
   if (unit === UNIT_CELSIUS_PER_MIN) return formatNumber(value) + ' \u00b0C/min'
   if (unit === UNIT_TIME_SECONDS) return formatElapsedSeconds(value)
+  if (unit === UNIT_PERCENT) return formatNumber(value) + ' %'
   if (unit === null && VALUE_BY_CODE[value]) return VALUE_BY_CODE[value]
   return formatNumber(value)
 }
