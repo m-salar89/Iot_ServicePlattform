@@ -242,8 +242,14 @@ export default function ProcessChart({ view }: Props) {
         </g>
       </svg>
 
-      {view.program && view.program.params.length > 0 && (
+      {view.program && (view.program.programTypeLabel || view.program.params.length > 0) && (
         <div className="chart-prog">
+          {view.program.programTypeLabel && (
+            <div className="chart-prog-item">
+              <span>Programmtyp</span>
+              <strong>{view.program.programTypeLabel}</strong>
+            </div>
+          )}
           {view.program.params.map((param) => (
             <div key={param.slot} className="chart-prog-item">
               <span>{param.label}</span>

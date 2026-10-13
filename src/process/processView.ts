@@ -181,7 +181,7 @@ export function buildProcessView(process: ProcessEntry): ProcessView | null {
   const program = parseProgInfo(payload.progInfo ?? payload.Programinfo ?? payload.programInfo)
   const typeId = toNumber(metadata.dType)
   return {
-    programName: program?.name ?? pickString(metadata, ['programName', 'progName', 'pName']),
+    programName: program?.name || program?.programTypeLabel || pickString(metadata, ['programName', 'progName', 'pName']),
     program,
     deviceKind: typeId !== null ? ovenTypeLabel(typeId) : pickString(metadata, ['dKind']),
     deviceTypeId: typeId,
