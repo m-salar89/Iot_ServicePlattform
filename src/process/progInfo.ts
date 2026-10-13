@@ -103,8 +103,9 @@ export function formatProgValue(value: number, unit: number | null): string {
   return formatNumber(value)
 }
 
-function paramLabel(code: number, slot: number): string {
-  return PARAM_BY_CODE[code] ?? 'Parameter ' + slot
+function paramLabel(code: number): string {
+  const normalized = Math.trunc(code)
+  return PARAM_BY_CODE[normalized] ?? 'Code ' + normalized
 }
 
 export function parseProgInfo(raw: unknown): ProgramInfo | null {
@@ -121,16 +122,16 @@ export function parseProgInfo(raw: unknown): ProgramInfo | null {
 
     const slot = Number(match[1])
     const code = toNumber(value)
-    const amount = toNumber(record['V' + slot])
+    const amount = toNumber(record['V' + slot] ?? record['v' + slot])
     if (code === null || amount === null) continue
 
-    const unit = toNumber(record['U' + slot])
+    const unit = toNumber(record['U' + slot] ?? record['u' + slot])
     params.push({
       slot,
       code,
       value: amount,
       unit,
-      label: paramLabel(code, slot),
+      label: paramLabel(code),
       display: formatProgValue(amount, unit),
     })
   }
