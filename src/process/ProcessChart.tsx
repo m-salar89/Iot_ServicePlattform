@@ -242,7 +242,7 @@ export default function ProcessChart({ view }: Props) {
         </g>
       </svg>
 
-      {view.program && (view.program.programTypeLabel || view.program.params.length > 0) && (
+      {view.program && (view.program.programTypeLabel || view.program.fields.length > 0 || view.program.params.length > 0) && (
         <div className="chart-prog">
           {view.program.programTypeLabel && (
             <div className="chart-prog-item">
@@ -250,8 +250,14 @@ export default function ProcessChart({ view }: Props) {
               <strong>{view.program.programTypeLabel}</strong>
             </div>
           )}
+          {view.program.fields.map((field) => (
+            <div key={field.key} className="chart-prog-item">
+              <span>{field.label}</span>
+              <strong>{field.display}</strong>
+            </div>
+          ))}
           {view.program.params.map((param) => (
-            <div key={param.slot} className="chart-prog-item">
+            <div key={param.code} className="chart-prog-item">
               <span>{param.label}</span>
               <strong>{param.display}</strong>
             </div>

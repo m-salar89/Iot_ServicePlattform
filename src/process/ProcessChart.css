@@ -121,13 +121,15 @@
   color: #ff8d73;
 }
 .chart-prog {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .chart-prog-item {
   display: grid;
+  flex: 0 0 auto;
+  min-width: 7.5rem;
   gap: 0.15rem;
   padding: 0.45rem 0.55rem;
   border: 1px solid var(--line);
