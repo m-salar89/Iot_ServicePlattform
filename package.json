@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "gui-strings": "node scripts/extractGuiStrings.mjs",
+    "predev": "node scripts/extractGuiStrings.mjs",
+    "prebuild": "node scripts/extractGuiStrings.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"

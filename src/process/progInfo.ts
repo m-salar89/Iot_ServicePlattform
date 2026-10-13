@@ -1,3 +1,5 @@
+import { GUI_STRING_DE, GUI_STRING_NAME } from './guiStrings.de'
+
 export type ProgParam = {
   slot: number
   code: number
@@ -35,44 +37,8 @@ const PROGRAM_TYPE_BY_ID: Record<number, string> = {
   81: 'PROGRAM_TYPE_STARTUP',
 }
 
-const PARAM_BY_CODE: Record<number, string> = {
-  135: 'Vakuum',
-  120: 'Starttemperatur',
-  122: 'Vortrocknen',
-  123: 'Schlusszeit',
-  124: 'Homogenisieren',
-  125: 'Homogenisierzeit',
-  158: 'Heizrate',
-  162: 'Endtemperatur',
-  163: 'Haltezeit',
-  255: 'Tempertemperatur',
-  256: 'Temperzeit',
-  134: 'maximale Temperatur',
-  159: 'Öffnungszeit',
-  126: 'Heizrate 1',
-  127: 'Finaltemperatur 1',
-  128: 'Haltezeit 1',
-  129: 'Heizrate 2',
-  130: 'Finaltemperatur 2',
-  309: 'Heizrate 3',
-  310: 'Finaltemperatur 3',
-  311: 'Haltezeit 3',
-  315: 'Dummy Vakuum',
-  365: 'Kühl-Endtemperatur',
-  640: 'Peak-Finaltemperatur',
-  641: 'Peak-Finalzeit',
-}
-
-const VALUE_BY_CODE: Record<number, string> = {
-  4: 'Leer',
-  115: 'Ja',
-  116: 'Nein',
-}
-
-const UNIT_CELSIUS = 151
-const UNIT_CELSIUS_PER_MIN = 249
-const UNIT_TIME_SECONDS = 252
-const UNIT_PERCENT = 314
+const CHOICE_NAMES = new Set(['YES', 'NO', 'ON', 'OFF'])
+const TIME_UNITS = new Set(['mm:ss', 'mmss', 'hh:mm'])
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -94,6 +60,13 @@ function formatNumber(value: number): string {
   return String(Math.round(value * 1000) / 1000)
 }
 
+function guiText(id: number): string | null {
+  const text = GUI_STRING_DE[Math.trunc(id)]
+  if (typeof text !== 'string') return null
+  const trimmed = text.trim()
+  return trimmed || null
+}
+
 export function programTypeLabel(programType: number): string {
   const key = PROGRAM_TYPE_BY_ID[programType]
   if (!key) return 'Typ ' + programType
@@ -109,17 +82,23 @@ export function formatElapsedSeconds(seconds: number): string {
 }
 
 export function formatProgValue(value: number, unit: number | null): string {
-  if (unit === UNIT_CELSIUS) return formatNumber(value) + ' \u00b0C'
-  if (unit === UNIT_CELSIUS_PER_MIN) return formatNumber(value) + ' \u00b0C/min'
-  if (unit === UNIT_TIME_SECONDS) return formatElapsedSeconds(value)
-  if (unit === UNIT_PERCENT) return formatNumber(value) + ' %'
-  if (unit === null && VALUE_BY_CODE[value]) return VALUE_BY_CODE[value]
+  if (unit !== null) {
+    const unitText = guiText(unit)
+    if (unitText && TIME_UNITS.has(unitText)) return formatElapsedSeconds(value)
+    if (unitText) return formatNumber(value) + ' ' + unitText
+    return formatNumber(value)
+  }
+  const choice = GUI_STRING_NAME[Math.trunc(value)]
+  if (choice && CHOICE_NAMES.has(choice)) {
+    const text = guiText(value)
+    if (text) return text
+  }
   return formatNumber(value)
 }
 
 function paramLabel(code: number): string {
   const normalized = Math.trunc(code)
-  return PARAM_BY_CODE[normalized] ?? 'Code ' + normalized
+  return guiText(normalized) ?? 'Code ' + normalized
 }
 
 export function parseProgInfo(raw: unknown): ProgramInfo | null {
